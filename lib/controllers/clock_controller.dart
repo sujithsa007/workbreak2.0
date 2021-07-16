@@ -99,11 +99,38 @@ class ClockController extends GetxController {
     _clockThemeTrigger.value = val;
   }
 
+  RxBool _checkBoxValue = false.obs;
+  get checkBoxValue => _checkBoxValue.value;
+
+  set setCheckBoxValue(val) {
+    _checkBoxValue.value = val;
+  }
+
   RxBool _buttonChange = false.obs;
   get buttonChange => _buttonChange.value;
 
   set setButtonChange(val) {
     _buttonChange.value = val;
+  }
+
+  TextEditingController _workTimeInputController = new TextEditingController();
+  TextEditingController _breakTimeInputController = new TextEditingController();
+
+  get workTimeInputController => _workTimeInputController;
+  get breakTimeInputController => _breakTimeInputController;
+
+  RxString _workTimeInput = '5'.obs;
+  get workTimeInput => _workTimeInput.value;
+
+  RxString _breakTimeInput = '1'.obs;
+  get breakTimeInput => _breakTimeInput.value;
+
+  setWorkTimeInput(val) {
+    _workTimeInput.value = val;
+  }
+
+  setBreakTimeInput(val) {
+    _breakTimeInput.value = val;
   }
 
   RxString _selectedWorkTime = ''.obs;
@@ -131,7 +158,10 @@ class ClockController extends GetxController {
   }
 
   _clockAnimateCountDown(workTime, breakTime) {
-    _clockTimer.cancel();
+    if (_clockTimer != null) {
+      _clockTimer.cancel();
+    }
+
     if (_countDownTimer != null) {
       _countDownTimer.cancel();
     }
@@ -146,14 +176,16 @@ class ClockController extends GetxController {
     // int intRemInterval = remInterval;
     // setRemainingTime = intRemTime;
     _countDownTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-      print(intRemTime.toString());
+      // print(intRemTime.toString());
       // print(totTime);
-      print(i);
+      // print(i);
       if (i == 0) {
         setRemainingTime = intRemTime;
       }
       if (i++ + 1 == totTime) {
-        _countDownTimer.cancel();
+        if (_countDownTimer != null) {
+          _countDownTimer.cancel();
+        }
         print('timer cancelled');
         _clockAnimateCountDown(workTime, breakTime);
       }
@@ -184,7 +216,7 @@ class ClockController extends GetxController {
         'Please select both work and break times',
         duration: Duration(seconds: 3),
         colorText: Colors.white,
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.red,
       );
     } else {
       setClockThemeTriggerValue = true;
@@ -195,30 +227,68 @@ class ClockController extends GetxController {
             : 'Your new settings have been applied',
         duration: Duration(seconds: 3),
         colorText: Colors.white,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.green,
       );
       // var remTime = workTime.toString().split(' ')[0];
       // setRemainingTime = int.parse(remTime);
       _clockAnimateCountDown(workTime.toString(), breakInterval.toString());
 
-      _buttonChange.value == true
-          ? _selectedWorkTimer.cancel()
-          : print('Timer not active');
-      _buttonChange.value == true
-          ? _selectedIntervalTimer.cancel()
-          : print('Timer not active');
-      _buttonChange.value == true
-          ? _testTimer.cancel()
-          : print('Timer not active');
+      if (_selectedWorkTimer != null) {
+        _selectedWorkTimer.cancel();
+      }
+      if (_selectedIntervalTimer != null) {
+        _selectedIntervalTimer.cancel();
+      }
+      if (_testTimer != null) {
+        _testTimer.cancel();
+      }
       setButtonChange = true;
       await _setUpTimer(_selectedWorkTime.value, _selectedWorkInterval.value);
       // }
     }
   }
 
+  setCustomTime() async {
+    if (_workTimeInputController.text.toString().contains('.') ||
+        _workTimeInputController.text.toString().contains('-') ||
+        _workTimeInputController.text.toString().contains(',') ||
+        _workTimeInputController.text.toString() == '' ||
+        _breakTimeInputController.text.toString().contains('.') ||
+        _breakTimeInputController.text.toString().contains('-') ||
+        _breakTimeInputController.text.toString().contains(',') ||
+        _breakTimeInputController.text.toString() == '') {
+      Get.snackbar(
+        'Error',
+        'Enter a valid work and break time',
+        duration: Duration(seconds: 3),
+        colorText: Colors.white,
+        backgroundColor: Colors.red,
+      );
+    } else {
+      int _workTime = int.parse(_workTimeInput.value.toString());
+      int _breakTime = int.parse(_breakTimeInput.value.toString());
+      if (_workTime < 5 || _breakTime < 1) {
+        Get.snackbar(
+          'Error',
+          'Enter atleast 5 minutes work and 1 minute of break time',
+          duration: Duration(seconds: 3),
+          colorText: Colors.white,
+          backgroundColor: Colors.red,
+        );
+      } else {
+        setWorkTime = _workTimeInput.value.toString() + ' mins';
+        setIntervalTime = _breakTimeInput.value.toString() + ' mins';
+        // print('Custom print' +
+        //     _selectedWorkTime.value +
+        //     _selectedWorkInterval.value);
+        await onClickStartWork(
+            _selectedWorkTime.value, _selectedWorkInterval.value);
+      }
+    }
+  }
+
   _startTimer(int duration, String message, bool triggerFn) async {
     return Timer.periodic(Duration(minutes: duration), (Timer timer) async {
-      triggerFn ? _testTimer.cancel() : print('tester running');
       triggerFn
           ? _setUpTimer(_timeForWorkTimer, _timeForIntervalTimer)
           : print('No need to trigger ******');

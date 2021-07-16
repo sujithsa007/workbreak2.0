@@ -27,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
     double _fontSizeTitle = _mediaQueryHeight > 550 ? 22 : 18;
     double _fontSizeBullet = _mediaQueryHeight > 550 ? 12 : 8;
     double _fontButton = _mediaQueryHeight > 550 ? 22 : 16;
-    double _topMargin = _mediaQueryHeight > 550
-        ? _mediaQueryHeight * .01
-        : _mediaQueryHeight * .01;
+    double _bottomMargin = _mediaQueryHeight > 550
+        ? _mediaQueryHeight * .008
+        : _mediaQueryHeight * .008;
 
     double _opacity = 0.8;
 
@@ -102,54 +102,54 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    Container _drawer = Container(
-        color: Colors.grey,
-        width: MediaQuery.of(context).size.height * .2,
-        // height: MediaQuery.of(context).size.height * .5,
-        child: SafeArea(
-          child: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                ListTile(
-                  title: Row(
-                    children: [
-                      Container(
-                        child: Icon(
-                          Icons.info_outline,
-                          size: 20,
-                          color: Colors.green,
-                        ),
-                        margin: EdgeInsets.only(left: 10, right: 10),
-                      ),
-                      Text(
-                        'Info',
-                        style: TextStyle(color: Colors.green),
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(
-                    Icons.settings,
-                    size: 20,
-                    color: Colors.blue,
-                  ),
-                  title: Text(
-                    'Settings',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ));
+    // Container _drawer = Container(
+    //     color: Colors.grey,
+    //     width: MediaQuery.of(context).size.height * .2,
+    //     // height: MediaQuery.of(context).size.height * .5,
+    //     child: SafeArea(
+    //       child: Drawer(
+    //         child: ListView(
+    //           padding: EdgeInsets.zero,
+    //           children: <Widget>[
+    //             ListTile(
+    //               title: Row(
+    //                 children: [
+    //                   Container(
+    //                     child: Icon(
+    //                       Icons.info_outline,
+    //                       size: 20,
+    //                       color: Colors.green,
+    //                     ),
+    //                     margin: EdgeInsets.only(left: 10, right: 10),
+    //                   ),
+    //                   Text(
+    //                     'Info',
+    //                     style: TextStyle(color: Colors.green),
+    //                   ),
+    //                 ],
+    //               ),
+    //               onTap: () {
+    //                 Navigator.pop(context);
+    //               },
+    //             ),
+    //             ListTile(
+    //               leading: Icon(
+    //                 Icons.settings,
+    //                 size: 20,
+    //                 color: Colors.blue,
+    //               ),
+    //               title: Text(
+    //                 'Settings',
+    //                 style: TextStyle(color: Colors.blue),
+    //               ),
+    //               onTap: () {
+    //                 Navigator.pop(context);
+    //               },
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ));
 
     RichText _appBarTitle = RichText(
       text: TextSpan(children: [
@@ -234,6 +234,47 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
 
+    Container _customInputContainer(controller, onChangeFunction, hintText) =>
+        Container(
+          margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          height: MediaQuery.of(context).size.height * .075,
+          // margin: EdgeInsets.all(10),
+          padding: EdgeInsets.only(
+              left: 10, top: MediaQuery.of(context).size.height * .004),
+          decoration: BoxDecoration(
+            color: _clockController.buttonChange == false
+                ? Colors.green.withOpacity(.3)
+                : Colors.blue.withOpacity(.3),
+            border: Border.all(
+                color: Colors.grey, // set border color
+                width: 2.0), // set border width
+            borderRadius: BorderRadius.all(
+                Radius.circular(10.0)), // set rounded corner radius
+          ),
+          child: TextField(
+            keyboardType: TextInputType.number,
+            maxLength: 3,
+            controller: controller,
+            onChanged: (value) {
+              print(controller);
+              if (controller == false) {
+                _clockController.setWorkTimeInput('');
+                _clockController.setBreakTimeInput('');
+              }
+              onChangeFunction(value);
+            },
+            decoration: InputDecoration(
+              fillColor: Colors.grey,
+              counterText: "",
+              contentPadding: EdgeInsets.only(bottom: 5),
+              hintText: hintText,
+              // hintStyle: TextStyle(color: Colors.black),
+              border: InputBorder.none,
+            ),
+            style: TextStyle(fontSize: 15.0, height: 2.0, color: Colors.black),
+          ),
+        );
+
     Container _confirmButton = Container(
       margin: EdgeInsets.only(left: 30, right: 30),
       width: _mediaQueryWidth * .2,
@@ -268,10 +309,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.bold),
           ),
           onPressed: () async {
-            await _clockController.onClickStartWork(
-                _clockController.selectedWorkTime,
-                _clockController.selectedWorkInterval);
-            setState(() {});
+            if (_clockController.checkBoxValue == true) {
+              await _clockController.setCustomTime();
+              setState(() {});
+            } else {
+              print('in this loop');
+              await _clockController.onClickStartWork(
+                  _clockController.selectedWorkTime,
+                  _clockController.selectedWorkInterval);
+              setState(() {});
+            }
           },
         ),
       ),
@@ -289,58 +336,98 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          _backgroundImage,
-          Column(
-            children: [
-              Container(
-                height: _mediaQueryHeight * 0.92,
-                child: Scaffold(
-                    backgroundColor: Colors.transparent,
-                    // drawer: _drawer,
-                    appBar: AppBar(
-                      title: _appBarTitle,
-                      centerTitle: true,
-                      backgroundColor: Colors.transparent,
-                      elevation: 0.0,
-                    ),
-                    body: ListView(
-                      children: [
-                        Align(
-                          child: Container(
-                              margin: EdgeInsets.only(bottom: _topMargin),
-                              width: _mediaQueryWidth * .6,
-                              height: _mediaQueryWidth * .6,
-                              child: ClockScreen()),
-                          alignment: Alignment.topCenter,
-                        ),
-                        _optionsContainer(
-                            'W O R K    T I M E', _workOptions, 1),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        _optionsContainer(
-                            'B R E A K   T I M E ', _intervalOptions, 2),
-                        Platform.isIOS
-                            ? SizedBox(
-                                height: 35,
-                              )
-                            : SizedBox(
+        resizeToAvoidBottomInset: false,
+        body: Obx(() => Stack(
+              children: <Widget>[
+                _backgroundImage,
+                Column(
+                  children: [
+                    Container(
+                      height: _mediaQueryHeight * 0.92,
+                      child: Scaffold(
+                          backgroundColor: Colors.transparent,
+                          // drawer: _drawer,
+                          appBar: AppBar(
+                            title: _appBarTitle,
+                            centerTitle: true,
+                            backgroundColor: Colors.transparent,
+                            elevation: 0.0,
+                          ),
+                          body: ListView(
+                            children: [
+                              Align(
+                                child: Container(
+                                    // margin: EdgeInsets.only(bottom: _bottomMargin),
+                                    width: _mediaQueryWidth * .6,
+                                    height: _mediaQueryWidth * .6,
+                                    child: ClockScreen()),
+                                alignment: Alignment.topCenter,
+                              ),
+                              Container(
+                                child: Row(
+                                  children: <Widget>[
+                                    new Checkbox(
+                                        value: _clockController.checkBoxValue,
+                                        activeColor:
+                                            _clockController.buttonChange ==
+                                                    false
+                                                ? Colors.green
+                                                : Colors.blue,
+                                        onChanged: (bool newValue) {
+                                          print(newValue);
+                                          _clockController.setCheckBoxValue =
+                                              newValue;
+                                          // setState(() {});
+                                        }),
+                                    Text(
+                                      'Set Custom Time',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              _clockController.checkBoxValue == true
+                                  ? _customInputContainer(
+                                      _clockController.workTimeInputController,
+                                      _clockController.setWorkTimeInput,
+                                      'Enter Work time in minutes > 5')
+                                  : Container(),
+                              _clockController.checkBoxValue == true
+                                  ? _customInputContainer(
+                                      _clockController.breakTimeInputController,
+                                      _clockController.setBreakTimeInput,
+                                      'Enter Break time in minutes > 1')
+                                  : Container(),
+                              _clockController.checkBoxValue == false
+                                  ? _optionsContainer(
+                                      'W O R K    T I M E', _workOptions, 1)
+                                  : Container(),
+                              SizedBox(
                                 height: 15,
                               ),
-                        _confirmButton,
-                        SizedBox(height: 15),
-                      ],
-                    )),
-              ),
-              Container(
-                child: _bannerArea,
-              )
-            ],
-          ),
-        ],
-      ),
-    );
+                              _clockController.checkBoxValue == false
+                                  ? _optionsContainer('B R E A K   T I M E ',
+                                      _intervalOptions, 2)
+                                  : Container(),
+                              Platform.isIOS
+                                  ? SizedBox(
+                                      height: 35,
+                                    )
+                                  : SizedBox(
+                                      height: 15,
+                                    ),
+                              _confirmButton,
+                              SizedBox(height: 15),
+                            ],
+                          )),
+                    ),
+                    Container(
+                      child: _bannerArea,
+                    )
+                  ],
+                ),
+              ],
+            )));
   }
 }
