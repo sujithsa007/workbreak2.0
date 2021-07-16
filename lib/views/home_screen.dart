@@ -11,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:work_break/controllers/clock_controller.dart';
-// import 'package:work_break/controllers/text_to_speech_controller.dart';
 import 'package:work_break/views/clock.dart';
 import 'dart:io' show Platform;
 
@@ -22,13 +21,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ClockController _clockController = Get.put(ClockController());
-  /* final TextToSpeechController _textToSpeechController =
-      Get.put(TextToSpeechController());*/
   Widget build(BuildContext context) {
     var _mediaQueryHeight = MediaQuery.of(context).size.height;
     var _mediaQueryWidth = MediaQuery.of(context).size.width;
     double _fontSizeTitle = _mediaQueryHeight > 550 ? 22 : 18;
-    // double _fontSizeSubtitle = _mediaQueryHeight > 550 ? 16 : 12;
     double _fontSizeBullet = _mediaQueryHeight > 550 ? 12 : 8;
     double _fontButton = _mediaQueryHeight > 550 ? 22 : 16;
     double _topMargin = _mediaQueryHeight > 550
