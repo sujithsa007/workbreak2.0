@@ -1,0 +1,41 @@
+name: work_break
+description: A new Flutter application which helps to take regular breaks between you work hours for a stress free and productive day
+publish_to: 'none'
+
+version: 1.0.4+6
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  percent_indicator: ^3.0.1
+  get: ^4.1.4
+  grouped_buttons: ^1.0.4
+  flutter_tts: ^3.0.0
+  wakelock : 0.1.4+2
+  intl: ^0.17.0
+  google_mobile_ads: ^0.13.0
+  animated_splash_screen: ^1.0.1+2
+  page_transition: ^1.1.7+4
+  in_app_update: ^2.0.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+   - assets/
+
+  fonts:
+     - family: Future
+       fonts:
+         - asset: fonts/future.ttf
