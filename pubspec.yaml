@@ -2,7 +2,7 @@ name: work_break
 description: A new Flutter application which helps to take regular breaks between you work hours for a stress free and productive day
 #publish_to: 'none'
 
-version: 1.1.2+10
+version: 1.1.4+12
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

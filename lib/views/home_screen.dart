@@ -338,8 +338,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Obx(() => UpgradeAlert(
-              child: Stack(
+        body: UpgradeAlert(
+          shouldPopScope: () => true,
+          child: Obx(() => Stack(
                 children: <Widget>[
                   _backgroundImage,
                   Column(
@@ -432,7 +433,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ],
-              ),
-            )));
+              )),
+        ));
   }
 }

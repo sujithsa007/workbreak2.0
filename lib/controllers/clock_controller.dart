@@ -22,7 +22,7 @@ class ClockController extends GetxController {
   ClockController() {
     _enableBackgroundMode();
     _initGoogleMobileAds();
-    loadBanner();
+    _loadBanner();
     _clockAnimateTimer();
     Wakelock.enable();
   }
@@ -49,7 +49,7 @@ class ClockController extends GetxController {
 
   get ad => _ad;
 
-  loadBanner() {
+  _loadBanner() {
     _ad = BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       size: AdSize.banner,
