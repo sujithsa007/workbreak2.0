@@ -9,6 +9,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:work_break/controllers/text_to_speech_controller.dart';
@@ -19,6 +20,7 @@ import 'package:work_break/utilities/messages.dart';
 
 class ClockController extends GetxController {
   ClockController() {
+    _enableBackgroundMode();
     _initGoogleMobileAds();
     loadBanner();
     _clockAnimateTimer();
@@ -27,6 +29,20 @@ class ClockController extends GetxController {
 
   Future<InitializationStatus> _initGoogleMobileAds() {
     return MobileAds.instance.initialize();
+  }
+
+  _enableBackgroundMode() async {
+    await FlutterBackground.hasPermissions;
+    final androidConfig = FlutterBackgroundAndroidConfig(
+      notificationTitle: "Work break",
+      notificationText: "Work break is running in the background",
+      notificationImportance: AndroidNotificationImportance.Default,
+      notificationIcon: AndroidResource(
+          name: 'background_icon',
+          defType: 'drawable'), // Default is ic_launcher from folder mipmap
+    );
+    await FlutterBackground.initialize(androidConfig: androidConfig);
+    await FlutterBackground.enableBackgroundExecution();
   }
 
   BannerAd _ad;

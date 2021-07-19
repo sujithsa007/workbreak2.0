@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:work_break/controllers/clock_controller.dart';
 import 'package:work_break/views/clock.dart';
 import 'dart:io' show Platform;
@@ -337,97 +338,101 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Obx(() => Stack(
-              children: <Widget>[
-                _backgroundImage,
-                Column(
-                  children: [
-                    Container(
-                      height: _mediaQueryHeight * 0.92,
-                      child: Scaffold(
-                          backgroundColor: Colors.transparent,
-                          // drawer: _drawer,
-                          appBar: AppBar(
-                            title: _appBarTitle,
-                            centerTitle: true,
+        body: Obx(() => UpgradeAlert(
+              child: Stack(
+                children: <Widget>[
+                  _backgroundImage,
+                  Column(
+                    children: [
+                      Container(
+                        height: _mediaQueryHeight * 0.92,
+                        child: Scaffold(
                             backgroundColor: Colors.transparent,
-                            elevation: 0.0,
-                          ),
-                          body: ListView(
-                            children: [
-                              Align(
-                                child: Container(
-                                    // margin: EdgeInsets.only(bottom: _bottomMargin),
-                                    width: _mediaQueryWidth * .6,
-                                    height: _mediaQueryWidth * .6,
-                                    child: ClockScreen()),
-                                alignment: Alignment.topCenter,
-                              ),
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    new Checkbox(
-                                        value: _clockController.checkBoxValue,
-                                        activeColor:
-                                            _clockController.buttonChange ==
-                                                    false
-                                                ? Colors.green
-                                                : Colors.blue,
-                                        onChanged: (bool newValue) {
-                                          print(newValue);
-                                          _clockController.setCheckBoxValue =
-                                              newValue;
-                                          // setState(() {});
-                                        }),
-                                    Text(
-                                      'Set Custom Time',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  ],
+                            // drawer: _drawer,
+                            appBar: AppBar(
+                              title: _appBarTitle,
+                              centerTitle: true,
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                            ),
+                            body: ListView(
+                              children: [
+                                Align(
+                                  child: Container(
+                                      // margin: EdgeInsets.only(bottom: _bottomMargin),
+                                      width: _mediaQueryWidth * .6,
+                                      height: _mediaQueryWidth * .6,
+                                      child: ClockScreen()),
+                                  alignment: Alignment.topCenter,
                                 ),
-                              ),
-                              _clockController.checkBoxValue == true
-                                  ? _customInputContainer(
-                                      _clockController.workTimeInputController,
-                                      _clockController.setWorkTimeInput,
-                                      'Enter Work time in minutes > 5')
-                                  : Container(),
-                              _clockController.checkBoxValue == true
-                                  ? _customInputContainer(
-                                      _clockController.breakTimeInputController,
-                                      _clockController.setBreakTimeInput,
-                                      'Enter Break time in minutes > 1')
-                                  : Container(),
-                              _clockController.checkBoxValue == false
-                                  ? _optionsContainer(
-                                      'W O R K    T I M E', _workOptions, 1)
-                                  : Container(),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              _clockController.checkBoxValue == false
-                                  ? _optionsContainer('B R E A K   T I M E ',
-                                      _intervalOptions, 2)
-                                  : Container(),
-                              Platform.isIOS
-                                  ? SizedBox(
-                                      height: 35,
-                                    )
-                                  : SizedBox(
-                                      height: 15,
-                                    ),
-                              _confirmButton,
-                              SizedBox(height: 15),
-                            ],
-                          )),
-                    ),
-                    Container(
-                      child: _bannerArea,
-                    )
-                  ],
-                ),
-              ],
+                                Container(
+                                  child: Row(
+                                    children: <Widget>[
+                                      new Checkbox(
+                                          value: _clockController.checkBoxValue,
+                                          activeColor:
+                                              _clockController.buttonChange ==
+                                                      false
+                                                  ? Colors.green
+                                                  : Colors.blue,
+                                          onChanged: (bool newValue) {
+                                            print(newValue);
+                                            _clockController.setCheckBoxValue =
+                                                newValue;
+                                            // setState(() {});
+                                          }),
+                                      Text(
+                                        'Set Custom Time',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                _clockController.checkBoxValue == true
+                                    ? _customInputContainer(
+                                        _clockController
+                                            .workTimeInputController,
+                                        _clockController.setWorkTimeInput,
+                                        'Enter Work time in minutes > 5')
+                                    : Container(),
+                                _clockController.checkBoxValue == true
+                                    ? _customInputContainer(
+                                        _clockController
+                                            .breakTimeInputController,
+                                        _clockController.setBreakTimeInput,
+                                        'Enter Break time in minutes > 1')
+                                    : Container(),
+                                _clockController.checkBoxValue == false
+                                    ? _optionsContainer(
+                                        'W O R K    T I M E', _workOptions, 1)
+                                    : Container(),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                _clockController.checkBoxValue == false
+                                    ? _optionsContainer('B R E A K   T I M E ',
+                                        _intervalOptions, 2)
+                                    : Container(),
+                                Platform.isIOS
+                                    ? SizedBox(
+                                        height: 35,
+                                      )
+                                    : SizedBox(
+                                        height: 15,
+                                      ),
+                                _confirmButton,
+                                SizedBox(height: 15),
+                              ],
+                            )),
+                      ),
+                      Container(
+                        child: _bannerArea,
+                      )
+                    ],
+                  ),
+                ],
+              ),
             )));
   }
 }
