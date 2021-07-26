@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
-import 'package:upgrader/upgrader.dart';
 import 'package:work_break/controllers/clock_controller.dart';
 import 'package:work_break/views/clock.dart';
 import 'dart:io' show Platform;
@@ -336,11 +335,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: UpgradeAlert(
-          shouldPopScope: () => true,
-          child: Obx(() => Stack(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Obx(() => Stack(
                 children: <Widget>[
                   _backgroundImage,
                   Column(
@@ -433,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ],
-              )),
-        ));
+              ))),
+    );
   }
 }

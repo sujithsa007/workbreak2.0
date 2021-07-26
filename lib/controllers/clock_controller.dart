@@ -194,7 +194,7 @@ class ClockController extends GetxController {
     _countDownTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       // print(intRemTime.toString());
       // print(totTime);
-      // print(i);
+      print(i);
       if (i == 0) {
         setRemainingTime = intRemTime;
       }
@@ -225,12 +225,13 @@ class ClockController extends GetxController {
   }
 
   onClickStartWork(workTime, breakInterval) async {
+    _loadBanner();
     // print(_convertTimeToHoursAndMinutes(180));
     if (workTime == '' || breakInterval == '') {
       Get.snackbar(
         'Oops',
         'Please select both work and break times',
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 2),
         colorText: Colors.white,
         backgroundColor: Colors.red,
       );
@@ -241,7 +242,7 @@ class ClockController extends GetxController {
         _buttonChange.value == false
             ? 'Start Working'
             : 'Your new settings have been applied',
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 2),
         colorText: Colors.white,
         backgroundColor: Colors.green,
       );
@@ -260,6 +261,7 @@ class ClockController extends GetxController {
       }
       setButtonChange = true;
       await _setUpTimer(_selectedWorkTime.value, _selectedWorkInterval.value);
+
       // }
     }
   }
@@ -276,7 +278,7 @@ class ClockController extends GetxController {
       Get.snackbar(
         'Error',
         'Enter a valid work and break time',
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 2),
         colorText: Colors.white,
         backgroundColor: Colors.red,
       );
@@ -287,7 +289,7 @@ class ClockController extends GetxController {
         Get.snackbar(
           'Error',
           'Enter atleast 5 minutes work and 1 minute of break time',
-          duration: Duration(seconds: 3),
+          duration: Duration(seconds: 2),
           colorText: Colors.white,
           backgroundColor: Colors.red,
         );
