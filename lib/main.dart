@@ -21,7 +21,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // var _mediaQueryWidth =  MediaQuery.of(context).s
     return GetMaterialApp(
         theme: ThemeData(
           primarySwatch: CustomColor.colorCustom,
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
           nextScreen: HomeScreen(),
           backgroundColor: Colors.white60,
           curve: Curves.bounceIn,
-          // splashTransition: SplashTransition.fadeTransition,
           pageTransitionType: PageTransitionType.fade,
           splash: Text('W O R K   B R E A K',
               style: TextStyle(

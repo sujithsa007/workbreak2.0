@@ -102,55 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // Container _drawer = Container(
-    //     color: Colors.grey,
-    //     width: MediaQuery.of(context).size.height * .2,
-    //     // height: MediaQuery.of(context).size.height * .5,
-    //     child: SafeArea(
-    //       child: Drawer(
-    //         child: ListView(
-    //           padding: EdgeInsets.zero,
-    //           children: <Widget>[
-    //             ListTile(
-    //               title: Row(
-    //                 children: [
-    //                   Container(
-    //                     child: Icon(
-    //                       Icons.info_outline,
-    //                       size: 20,
-    //                       color: Colors.green,
-    //                     ),
-    //                     margin: EdgeInsets.only(left: 10, right: 10),
-    //                   ),
-    //                   Text(
-    //                     'Info',
-    //                     style: TextStyle(color: Colors.green),
-    //                   ),
-    //                 ],
-    //               ),
-    //               onTap: () {
-    //                 Navigator.pop(context);
-    //               },
-    //             ),
-    //             ListTile(
-    //               leading: Icon(
-    //                 Icons.settings,
-    //                 size: 20,
-    //                 color: Colors.blue,
-    //               ),
-    //               title: Text(
-    //                 'Settings',
-    //                 style: TextStyle(color: Colors.blue),
-    //               ),
-    //               onTap: () {
-    //                 Navigator.pop(context);
-    //               },
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ));
-
     RichText _appBarTitle = RichText(
       text: TextSpan(children: [
         _headerSpanText('W', Colors.black, 35),
@@ -324,16 +275,18 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    Container _bannerArea = Container(
-      width: _mediaQueryWidth,
-      height: _mediaQueryHeight * 0.08,
-      color: Colors.transparent,
-      child: Center(
-        child: AdWidget(
-          ad: _clockController.ad,
-        ),
-      ),
-    );
+    Container _bannerArea = Platform.isAndroid
+        ? Container(
+            width: _mediaQueryWidth,
+            height: _mediaQueryHeight * 0.08,
+            color: Colors.transparent,
+            child: Center(
+              child: AdWidget(
+                ad: _clockController.ad,
+              ),
+            ),
+          )
+        : Container();
 
     return WillPopScope(
       onWillPop: () async => false,

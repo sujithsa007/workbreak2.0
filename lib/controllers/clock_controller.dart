@@ -8,6 +8,8 @@
 /// under clock.dart
 
 import 'dart:async';
+
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -20,9 +22,11 @@ import 'package:work_break/utilities/messages.dart';
 
 class ClockController extends GetxController {
   ClockController() {
-    _enableBackgroundMode();
-    _initGoogleMobileAds();
-    _loadBanner();
+    if (Platform.isAndroid) {
+      _enableBackgroundMode();
+      _initGoogleMobileAds();
+      _loadBanner();
+    }
     _clockAnimateTimer();
     Wakelock.enable();
   }
@@ -68,20 +72,23 @@ class ClockController extends GetxController {
     _ad.load();
   }
 
-  RxInt _remainingTime = 0.obs;
+  RxString _remainingTime = ''.obs;
 
   get remainingTime => _remainingTime.value;
 
   set setRemainingTime(int val) {
-    _remainingTime.value = val;
+    String remVal = convertTimeToHoursAndMinutesForClock(val);
+    print(remVal);
+    _remainingTime.value = remVal;
   }
 
-  RxInt _remainingInterval = 0.obs;
+  RxString _remainingInterval = ''.obs;
 
   get remainingInterval => _remainingInterval.value;
 
   set setRemainingInterval(int val) {
-    _remainingInterval.value = val;
+    String remVal = convertTimeToHoursAndMinutesForClock(val);
+    _remainingInterval.value = remVal;
   }
 
   final TextToSpeechController _textToSpeechController =
@@ -119,6 +126,10 @@ class ClockController extends GetxController {
   get checkBoxValue => _checkBoxValue.value;
 
   set setCheckBoxValue(val) {
+    if (val == false) {
+      _workTimeInputController.text = '';
+      _breakTimeInputController.text = '';
+    }
     _checkBoxValue.value = val;
   }
 
@@ -194,7 +205,7 @@ class ClockController extends GetxController {
     _countDownTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       // print(intRemTime.toString());
       // print(totTime);
-      print(i);
+      // print(i);
       if (i == 0) {
         setRemainingTime = intRemTime;
       }
@@ -218,10 +229,16 @@ class ClockController extends GetxController {
     });
   }
 
-  String _convertTimeToHoursAndMinutes(int value) {
+  String convertTimeToHoursAndMinutes(int value) {
     final int hour = value ~/ 60;
     final int minutes = value % 60;
     return '${hour.toString()}:${minutes.toString()}';
+  }
+
+  String convertTimeToHoursAndMinutesForClock(int value) {
+    final int hour = value ~/ 60;
+    final int minutes = value % 60;
+    return '${hour.toString()}.min&${minutes.toString()},sec';
   }
 
   onClickStartWork(workTime, breakInterval) async {
@@ -330,7 +347,7 @@ class ClockController extends GetxController {
     print('timer set workTime****' + _timeForWorkTimer.toString());
     print('timer set intervalTime****' + _timeForIntervalTimer.toString());
 
-    String _convertedTime = _convertTimeToHoursAndMinutes(_timeForWorkTimer);
+    String _convertedTime = convertTimeToHoursAndMinutes(_timeForWorkTimer);
 
     if (_convertedTime.split(':')[1] == '0') {
       if (_convertedTime.split(':')[0] == '1') {

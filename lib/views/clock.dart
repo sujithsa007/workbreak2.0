@@ -75,41 +75,59 @@ class ClockScreen extends StatelessWidget {
               ),
               children: <TextSpan>[
                 TextSpan(
-                    text: remainingTime.toString().split('.')[0] == '0' ||
-                            remainingTime.toString().split('.')[0] == '1'
-                        ? 'less than 1'
-                        : remainingTime.toString().split('.')[0],
+                    text: '$message\n',
                     style: new TextStyle(
-                        color: message == 'BREAK TIME'
+                      fontSize: _mediaQueryHeight > 600 ? 16 : 12,
+                      fontWeight: FontWeight.w700,
+                      color: message == 'Start working in'
+                          ? Colors.red
+                          : Colors.black,
+                    )),
+                TextSpan(
+                    text: remainingTime.length == 0
+                        ? ''
+                        : remainingTime.split('.')[0],
+                    style: new TextStyle(
+                        color: message == 'Start working in'
                             ? Colors.red
-                            : Colors.deepOrange,
-                        fontSize: remainingTime.toString().split('.')[0] ==
-                                    '0' ||
-                                remainingTime.toString().split('.')[0] == '1'
-                            ? 20
-                            : 30,
+                            : Colors.black,
+                        fontSize: 30,
                         fontWeight: FontWeight.w600)),
                 TextSpan(
-                    text: message == ''
+                    text: remainingTime.length == 0
                         ? ''
-                        : remainingTime.toString().split('.')[0] == '0' ||
-                                remainingTime.toString().split('.')[0] == '1'
-                            ? '\nminute'
-                            : '\nminutes',
+                        : remainingTime.split('.')[1].split('&')[0],
                     style: new TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
+                        color: message == 'Start working in'
+                            ? Colors.red
+                            : Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600)),
+                TextSpan(
+                    text: ' ',
+                    style: new TextStyle(
+                      fontSize: 12,
                     )),
                 TextSpan(
-                    text: '\n$message',
+                    text: remainingTime.length == 0
+                        ? ''
+                        : remainingTime.split('&')[1].split(',')[0],
                     style: new TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: message == 'BREAK TIME'
-                          ? Colors.red
-                          : Colors.deepOrange,
-                    )),
+                        color: message == 'Start working in'
+                            ? Colors.red
+                            : Colors.black,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w600)),
+                TextSpan(
+                    text: remainingTime.length == 0
+                        ? ''
+                        : remainingTime.split(',')[1],
+                    style: new TextStyle(
+                        color: message == 'Start working in'
+                            ? Colors.red
+                            : Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600)),
               ],
             ),
           ),
@@ -130,17 +148,11 @@ class ClockScreen extends StatelessWidget {
               ),
               _clockController.buttonChange == false
                   ? _displayTime(_clockController)
-                  : _clockController.remainingTime == 0
-                      ? _remainingTime(
-                          _clockController.remainingInterval == 0 ||
-                                  _clockController.remainingInterval == 1
-                              ? ''
-                              : _clockController.remainingInterval / 60,
-                          _clockController.remainingInterval == 0
-                              ? ''
-                              : 'BREAK TIME')
+                  : _clockController.remainingTime == '0.min&0,sec'
+                      ? _remainingTime(_clockController.remainingInterval,
+                          'Start working in')
                       : _remainingTime(
-                          _clockController.remainingTime / 60, 'WORK TIME'),
+                          _clockController.remainingTime, 'Take a break in'),
               _clockRing(0.42, Colors.transparent, Colors.transparent,
                   Colors.blue, Colors.green),
               _clockRing(0.48, Colors.transparent, Colors.transparent,
