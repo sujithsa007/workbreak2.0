@@ -10,9 +10,9 @@ class RandomMessage {
       'Step out to catch some fresh air',
       'Get some coffee',
       'Time to stretch',
-      'Time to take your eys of that bright monitor',
+      'Time to take your eyes of that bright monitor',
       'Cool down your brain, it needs a break',
-      'I know work is important, but so are you. Take a break buddy'
+      'I know work is important, but so are you. Take a break'
     ];
     int randomIndex = Random().nextInt(workMessages.length);
     return workMessages[randomIndex];

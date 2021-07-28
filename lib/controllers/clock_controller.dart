@@ -41,9 +41,8 @@ class ClockController extends GetxController {
       notificationTitle: "Work break",
       notificationText: "Work break is running in the background",
       notificationImportance: AndroidNotificationImportance.Default,
-      notificationIcon: AndroidResource(
-          name: 'background_icon',
-          defType: 'drawable'), // Default is ic_launcher from folder mipmap
+      notificationIcon:
+          AndroidResource(name: 'background_icon', defType: 'drawable'),
     );
     await FlutterBackground.initialize(androidConfig: androidConfig);
     await FlutterBackground.enableBackgroundExecution();
@@ -185,6 +184,13 @@ class ClockController extends GetxController {
   }
 
   _clockAnimateCountDown(workTime, breakTime) {
+    int _remTime = int.parse(workTime.toString().split(' ')[0]);
+    int _remInterval = int.parse(breakTime.toString().split(' ')[0]);
+    int _intRemTime = _remTime * 60;
+    int _intRemInterval = _remInterval * 60;
+    int _totTime = _intRemTime + _intRemInterval;
+    int _startTimerCount = 0;
+
     if (_clockTimer != null) {
       _clockTimer.cancel();
     }
@@ -192,58 +198,46 @@ class ClockController extends GetxController {
     if (_countDownTimer != null) {
       _countDownTimer.cancel();
     }
-    int remTime = int.parse(workTime.toString().split(' ')[0]);
-    int remInterval = int.parse(breakTime.toString().split(' ')[0]);
-    int intRemTime = remTime * 60;
-    int intRemInterval = remInterval * 60;
-    int totTime = intRemTime + intRemInterval;
 
-    int i = 0;
-    // int intRemTime = remTime;
-    // int intRemInterval = remInterval;
-    // setRemainingTime = intRemTime;
     _countDownTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       // print(intRemTime.toString());
       // print(totTime);
       // print(i);
-      if (i == 0) {
-        setRemainingTime = intRemTime;
+      if (_startTimerCount == 0) {
+        setRemainingTime = _intRemTime;
       }
-      if (i++ + 1 == totTime) {
+      if (_startTimerCount++ + 1 == _totTime) {
         if (_countDownTimer != null) {
           _countDownTimer.cancel();
         }
         print('timer cancelled');
         _clockAnimateCountDown(workTime, breakTime);
       }
-      if (intRemTime >= 0) {
-        setRemainingTime = intRemTime--;
+      if (_intRemTime >= 0) {
+        setRemainingTime = _intRemTime--;
       }
-      // print(intRemTime);
-      if (intRemTime == -1) {
-        if (intRemInterval >= 0) {
-          setRemainingInterval = intRemInterval--;
-          // print('this is running');
+      if (_intRemTime == -1) {
+        if (_intRemInterval >= 0) {
+          setRemainingInterval = _intRemInterval--;
         }
       }
     });
   }
 
   String convertTimeToHoursAndMinutes(int value) {
-    final int hour = value ~/ 60;
-    final int minutes = value % 60;
-    return '${hour.toString()}:${minutes.toString()}';
+    final int _hour = value ~/ 60;
+    final int _minutes = value % 60;
+    return '${_hour.toString()}:${_minutes.toString()}';
   }
 
   String convertTimeToHoursAndMinutesForClock(int value) {
-    final int hour = value ~/ 60;
-    final int minutes = value % 60;
-    return '${hour.toString()}.min&${minutes.toString()},sec';
+    final int _hour = value ~/ 60;
+    final int _minutes = value % 60;
+    return '${_hour.toString()}.min&${_minutes.toString()},sec';
   }
 
   onClickStartWork(workTime, breakInterval) async {
     _loadBanner();
-    // print(_convertTimeToHoursAndMinutes(180));
     if (workTime == '' || breakInterval == '') {
       Get.snackbar(
         'Oops',
@@ -263,8 +257,7 @@ class ClockController extends GetxController {
         colorText: Colors.white,
         backgroundColor: Colors.green,
       );
-      // var remTime = workTime.toString().split(' ')[0];
-      // setRemainingTime = int.parse(remTime);
+
       _clockAnimateCountDown(workTime.toString(), breakInterval.toString());
 
       if (_selectedWorkTimer != null) {
@@ -278,8 +271,6 @@ class ClockController extends GetxController {
       }
       setButtonChange = true;
       await _setUpTimer(_selectedWorkTime.value, _selectedWorkInterval.value);
-
-      // }
     }
   }
 
@@ -302,7 +293,7 @@ class ClockController extends GetxController {
     } else {
       int _workTime = int.parse(_workTimeInput.value.toString());
       int _breakTime = int.parse(_breakTimeInput.value.toString());
-      if (_workTime < 5 || _breakTime < 1) {
+      if (_workTime > 5 || _breakTime < 1) {
         Get.snackbar(
           'Error',
           'Enter atleast 5 minutes work and 1 minute of break time',
@@ -313,9 +304,6 @@ class ClockController extends GetxController {
       } else {
         setWorkTime = _workTimeInput.value.toString() + ' mins';
         setIntervalTime = _breakTimeInput.value.toString() + ' mins';
-        // print('Custom print' +
-        //     _selectedWorkTime.value +
-        //     _selectedWorkInterval.value);
         await onClickStartWork(
             _selectedWorkTime.value, _selectedWorkInterval.value);
       }
@@ -368,8 +356,6 @@ class ClockController extends GetxController {
             ' minutes';
       }
     }
-    // print(_convertedTime);
-    // print(_finalAnnounceTime);
     var _randomMessage = RandomMessage.getARandomMessage();
     print('You have worked for ' + _finalAnnounceTime + '. $_randomMessage.');
 
@@ -386,11 +372,5 @@ class ClockController extends GetxController {
                 _timeForIntervalTimer.toString() +
                 ' minutes. Lets get back to work',
         true);
-
-    // //Tester timer
-    // int i = 0;
-    // _testTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) async {
-    //   print(i++);
-    // });
   }
 }

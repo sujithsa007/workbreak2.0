@@ -24,29 +24,18 @@ class TextToSpeechController extends GetxController {
     _initTts();
   }
 
-  // Future _getDefaultEngine() async {
-  //   var engine = await _flutterTts.getDefaultEngine;
-  // }
-  //
-  // Future _getEngines() async {
-  //   var engines = await _flutterTts.getEngines;
-  // }
-
   Future _initTts() async {
     if (isAndroid) {
-      //await _getDefaultEngine();
       print('initTTS loop start************');
       await _flutterTts.isLanguageInstalled('en-US');
       await _flutterTts.getEngines;
       print(await _flutterTts.setLanguage('en-US'));
     }
-    //await _getEngines();
     await _flutterTts.setLanguage('en-US');
   }
 
   Future speak(String text) async {
     _rate = isAndroid ? 0.7 : 0.5;
-    // await _flutterTts.awaitSpeakCompletion(true);
     await _flutterTts.setVolume(_volume);
     await _flutterTts.setSpeechRate(_rate);
     await _flutterTts.setPitch(_pitch);

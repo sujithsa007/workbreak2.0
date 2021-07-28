@@ -27,10 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
     double _fontSizeTitle = _mediaQueryHeight > 550 ? 22 : 18;
     double _fontSizeBullet = _mediaQueryHeight > 550 ? 12 : 8;
     double _fontButton = _mediaQueryHeight > 550 ? 22 : 16;
-    double _bottomMargin = _mediaQueryHeight > 550
-        ? _mediaQueryHeight * .008
-        : _mediaQueryHeight * .008;
-
     double _opacity = 0.8;
 
     Color _textColor = Colors.black;
@@ -74,19 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
       _clockController.setWorkTime = selected;
     }
 
-    // ignore: slash_for_doc_comments
-    /**
-     * Widgets Used
-     */
-
     TextSpan _headerSpanText(String name, Color color, double fontSize) =>
         TextSpan(
           text: name,
-          style: TextStyle(
-              fontSize: fontSize,
-              color: color,
-              // fontWeight: FontWeight.bold,
-              fontFamily: 'Future'),
+          style:
+              TextStyle(fontSize: fontSize, color: color, fontFamily: 'Future'),
         );
 
     Container _backgroundImage = Container(
@@ -189,7 +177,6 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
           height: MediaQuery.of(context).size.height * .075,
-          // margin: EdgeInsets.all(10),
           padding: EdgeInsets.only(
               left: 10, top: MediaQuery.of(context).size.height * .004),
           decoration: BoxDecoration(
@@ -219,7 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
               counterText: "",
               contentPadding: EdgeInsets.only(bottom: 5),
               hintText: hintText,
-              // hintStyle: TextStyle(color: Colors.black),
               border: InputBorder.none,
             ),
             style: TextStyle(fontSize: 15.0, height: 2.0, color: Colors.black),
@@ -312,7 +298,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Align(
                                   child: Container(
-                                      // margin: EdgeInsets.only(bottom: _bottomMargin),
                                       width: _mediaQueryWidth * .6,
                                       height: _mediaQueryWidth * .6,
                                       child: ClockScreen()),
@@ -332,7 +317,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                             print(newValue);
                                             _clockController.setCheckBoxValue =
                                                 newValue;
-                                            // setState(() {});
                                           }),
                                       Text(
                                         'Set Custom Time',
