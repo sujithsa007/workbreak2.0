@@ -21,7 +21,6 @@ dependencies:
   google_mobile_ads: ^0.13.0
   animated_splash_screen: ^1.0.1+2
   page_transition: ^1.1.7+4
-  in_app_update: ^2.0.0
   flutter_background: ^1.0.1
 
 
