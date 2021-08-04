@@ -15,9 +15,9 @@ class ClockScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _mediaQueryHeight = MediaQuery.of(context).size.height;
-    var _mediaQueryWidth = MediaQuery.of(context).size.width;
-    var _lineWidth = _mediaQueryWidth * .03;
+    double _mediaQueryHeight = MediaQuery.of(context).size.height;
+    double _mediaQueryWidth = MediaQuery.of(context).size.width;
+    double _lineWidth = _mediaQueryWidth * .03;
 
     Center _displayTime(clockController) => Center(
           child: Container(
@@ -61,6 +61,7 @@ class ClockScreen extends StatelessWidget {
             progressColor: _clockController.clockThemeTrigger ? pc1 : pc2,
           ),
         );
+
     Center _remainingTime(remainingTime, message) => Center(
           child: RichText(
             textAlign: TextAlign.center,

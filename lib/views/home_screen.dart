@@ -21,54 +21,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ClockController _clockController = Get.put(ClockController());
+
   Widget build(BuildContext context) {
-    var _mediaQueryHeight = MediaQuery.of(context).size.height;
-    var _mediaQueryWidth = MediaQuery.of(context).size.width;
+    double _mediaQueryHeight = MediaQuery.of(context).size.height;
+    double _mediaQueryWidth = MediaQuery.of(context).size.width;
     double _fontSizeTitle = _mediaQueryHeight > 550 ? 22 : 18;
     double _fontSizeBullet = _mediaQueryHeight > 550 ? 12 : 8;
     double _fontButton = _mediaQueryHeight > 550 ? 22 : 16;
     double _opacity = 0.8;
-
     Color _textColor = Colors.black;
 
     print(_mediaQueryHeight);
-
-    var _workOptions = <String>[
-      "30 mins    ",
-      "45 mins    ",
-      "60 mins    ",
-      "75 mins    ",
-      "90 mins    ",
-      "105 mins    ",
-      "120 mins    ",
-      "135 mins    ",
-      "150 mins    ",
-      "165 mins    ",
-      "180 mins    ",
-    ];
-
-    var _intervalOptions = <String>[
-      "5 mins    ",
-      "10 mins    ",
-      "15 mins    ",
-      "20 mins    ",
-      "25 mins    ",
-      "30 mins    ",
-      "35 mins    ",
-      "40 mins    ",
-      "45 mins    ",
-      "50 mins    ",
-      "55 mins    ",
-      "60 mins    ",
-    ];
-
-    _onSelectedWorkInterval(selected) {
-      _clockController.setIntervalTime = selected;
-    }
-
-    _onSelectedWorkTime(String selected) {
-      _clockController.setWorkTime = selected;
-    }
 
     TextSpan _headerSpanText(String name, Color color, double fontSize) =>
         TextSpan(
@@ -164,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       activeColor: _textColor,
                       onSelected: (String selected) {
                         selector == 1
-                            ? _onSelectedWorkTime(selected)
-                            : _onSelectedWorkInterval(selected);
+                            ? _clockController.onSelectedWorkTime(selected)
+                            : _clockController.onSelectedWorkInterval(selected);
                       }),
                 ),
               ),
@@ -341,15 +304,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                         'Enter Break time in minutes > 1')
                                     : Container(),
                                 _clockController.checkBoxValue == false
-                                    ? _optionsContainer(
-                                        'W O R K    T I M E', _workOptions, 1)
+                                    ? _optionsContainer('W O R K    T I M E',
+                                        _clockController.workOptions, 1)
                                     : Container(),
                                 SizedBox(
                                   height: 15,
                                 ),
                                 _clockController.checkBoxValue == false
                                     ? _optionsContainer('B R E A K   T I M E ',
-                                        _intervalOptions, 2)
+                                        _clockController.intervalOptions, 2)
                                     : Container(),
                                 Platform.isIOS
                                     ? SizedBox(
