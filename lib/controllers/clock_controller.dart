@@ -289,15 +289,14 @@ class ClockController extends GetxController {
     }
   }
 
+  bool _isPositiveNumber(String string) {
+    final inputValue1 = RegExp(r'^[1-9]+[0-9]*$');
+    final inputValue2 = RegExp(r'^(?:[+0]9)?[0-9]{10}$');
+    return inputValue1.hasMatch(string) && inputValue2.hasMatch(string);
+  }
+
   setCustomTime() async {
-    if (_workTimeInputController.text.toString().contains('.') ||
-        _workTimeInputController.text.toString().contains('-') ||
-        _workTimeInputController.text.toString().contains(',') ||
-        _workTimeInputController.text.toString() == '' ||
-        _breakTimeInputController.text.toString().contains('.') ||
-        _breakTimeInputController.text.toString().contains('-') ||
-        _breakTimeInputController.text.toString().contains(',') ||
-        _breakTimeInputController.text.toString() == '') {
+    if (!_isPositiveNumber(_workTimeInputController.text.toString())) {
       Get.snackbar(
         'Error',
         'Enter a valid work and break time',
