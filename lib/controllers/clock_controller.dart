@@ -21,6 +21,24 @@ import 'package:work_break/utilities/ad_helper.dart';
 import 'package:work_break/utilities/messages.dart';
 
 class ClockController extends GetxController {
+  ClockController() {
+    if (Platform.isAndroid) {
+      _enableBackgroundMode();
+      _initGoogleMobileAds();
+      _loadBanner();
+    }
+    _clockAnimateTimer();
+    Wakelock.enable();
+  }
+
+  final TextToSpeechController _textToSpeechController =
+      Get.put(TextToSpeechController());
+
+  TextEditingController _workTimeInputController = new TextEditingController();
+  TextEditingController _breakTimeInputController = new TextEditingController();
+  get workTimeInputController => _workTimeInputController;
+  get breakTimeInputController => _breakTimeInputController;
+
   var _workOptions = <String>[
     "30 mins    ",
     "45 mins    ",
@@ -34,7 +52,6 @@ class ClockController extends GetxController {
     "165 mins    ",
     "180 mins    ",
   ];
-
   var _intervalOptions = <String>[
     "5 mins    ",
     "10 mins    ",
@@ -49,7 +66,6 @@ class ClockController extends GetxController {
     "55 mins    ",
     "60 mins    ",
   ];
-
   get workOptions => _workOptions;
   get intervalOptions => _intervalOptions;
 
@@ -59,16 +75,6 @@ class ClockController extends GetxController {
 
   onSelectedWorkTime(String selected) {
     setWorkTime = selected;
-  }
-
-  ClockController() {
-    if (Platform.isAndroid) {
-      _enableBackgroundMode();
-      _initGoogleMobileAds();
-      _loadBanner();
-    }
-    _clockAnimateTimer();
-    Wakelock.enable();
   }
 
   Future<InitializationStatus> _initGoogleMobileAds() {
@@ -89,7 +95,6 @@ class ClockController extends GetxController {
   }
 
   BannerAd _ad;
-
   get ad => _ad;
 
   _loadBanner() {
@@ -112,9 +117,7 @@ class ClockController extends GetxController {
   }
 
   RxString _remainingTime = ''.obs;
-
   get remainingTime => _remainingTime.value;
-
   set setRemainingTime(int val) {
     String remVal = convertTimeToHoursAndMinutesForClock(val);
     print(remVal);
@@ -122,16 +125,11 @@ class ClockController extends GetxController {
   }
 
   RxString _remainingInterval = ''.obs;
-
   get remainingInterval => _remainingInterval.value;
-
   set setRemainingInterval(int val) {
     String remVal = convertTimeToHoursAndMinutesForClock(val);
     _remainingInterval.value = remVal;
   }
-
-  final TextToSpeechController _textToSpeechController =
-      Get.put(TextToSpeechController());
 
   RxDouble _secondsForAnimation = 0.0.obs;
   RxString _currentTimeToDisplay = ''.obs;
@@ -146,24 +144,14 @@ class ClockController extends GetxController {
   Timer _clockTimer;
   Timer _countDownTimer;
 
-  String _finalAnnounceTime = '';
-
-  RxBool _firstLoad = true.obs;
-
-  set setFirstLoad(val) {
-    _firstLoad.value = val;
-  }
-
   RxBool _clockThemeTrigger = false.obs;
   get clockThemeTrigger => _clockThemeTrigger.value;
-
   set setClockThemeTriggerValue(val) {
     _clockThemeTrigger.value = val;
   }
 
   RxBool _checkBoxValue = false.obs;
   get checkBoxValue => _checkBoxValue.value;
-
   set setCheckBoxValue(val) {
     if (val == false) {
       _workTimeInputController.text = '';
@@ -174,37 +162,26 @@ class ClockController extends GetxController {
 
   RxBool _buttonChange = false.obs;
   get buttonChange => _buttonChange.value;
-
   set setButtonChange(val) {
     _buttonChange.value = val;
   }
 
-  TextEditingController _workTimeInputController = new TextEditingController();
-  TextEditingController _breakTimeInputController = new TextEditingController();
-
-  get workTimeInputController => _workTimeInputController;
-  get breakTimeInputController => _breakTimeInputController;
-
   RxString _workTimeInput = '5'.obs;
   get workTimeInput => _workTimeInput.value;
-
-  RxString _breakTimeInput = '1'.obs;
-  get breakTimeInput => _breakTimeInput.value;
-
   setWorkTimeInput(val) {
     _workTimeInput.value = val;
   }
 
+  RxString _breakTimeInput = '1'.obs;
+  get breakTimeInput => _breakTimeInput.value;
   setBreakTimeInput(val) {
     _breakTimeInput.value = val;
   }
 
   RxString _selectedWorkTime = ''.obs;
   RxString _selectedWorkInterval = ''.obs;
-
   get selectedWorkTime => _selectedWorkTime.value;
   get selectedWorkInterval => _selectedWorkInterval.value;
-
   set setWorkTime(val) {
     _selectedWorkTime.value = val;
   }
@@ -212,8 +189,6 @@ class ClockController extends GetxController {
   set setIntervalTime(val) {
     _selectedWorkInterval.value = val;
   }
-
-  int _timeForWorkTimer, _timeForIntervalTimer;
 
   _clockAnimateTimer() {
     _clockTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
@@ -333,7 +308,7 @@ class ClockController extends GetxController {
     } else {
       int _workTime = int.parse(_workTimeInput.value.toString());
       int _breakTime = int.parse(_breakTimeInput.value.toString());
-      if (_workTime > 5 || _breakTime < 1) {
+      if (_workTime < 5 || _breakTime < 1) {
         Get.snackbar(
           'Error',
           'Enter atleast 5 minutes work and 1 minute of break time',
@@ -359,6 +334,9 @@ class ClockController extends GetxController {
       await _textToSpeechController.speak(message);
     });
   }
+
+  String _finalAnnounceTime = '';
+  int _timeForWorkTimer, _timeForIntervalTimer;
 
   _setUpTimer(workTimeReminder, breakIntervalReminder) async {
     if (workTimeReminder.toString().contains('min')) {
