@@ -8,7 +8,6 @@
 /// under clock.dart
 
 import 'dart:async';
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
@@ -290,9 +289,9 @@ class ClockController extends GetxController {
   }
 
   bool _isPositiveNumber(String string) {
-    final inputValue1 = RegExp(r'^[1-9]+[0-9]*$');
-    final inputValue2 = RegExp(r'^(?:[+0]9)?[0-9]{10}$');
-    return inputValue1.hasMatch(string) && inputValue2.hasMatch(string);
+    final checkNumber = RegExp(r'^(?:[+0]9)?[0-9]{10}$');
+    final checkNegativeNumber = RegExp(r'^[1-9]+[0-9]*$');
+    return checkNumber.hasMatch(string) && checkNegativeNumber.hasMatch(string);
   }
 
   setCustomTime() async {
@@ -373,7 +372,7 @@ class ClockController extends GetxController {
             ' minutes';
       }
     }
-    var _randomMessage = RandomMessage.getARandomMessage();
+    String _randomMessage = RandomMessage.getARandomMessage();
     print('You have worked for ' + _finalAnnounceTime + '. $_randomMessage.');
 
     _selectedWorkTimer = await _startTimer(
