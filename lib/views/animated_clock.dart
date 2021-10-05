@@ -8,10 +8,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:work_break/controllers/clock_controller.dart';
+import 'package:work_break/controllers/work_break_controller.dart';
 
-class ClockScreen extends StatelessWidget {
-  final ClockController _clockController = Get.put(ClockController());
+class AnimatedClockScreen extends StatelessWidget {
+  final WorkBreakController _workBreakController =
+      Get.put(WorkBreakController());
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +54,12 @@ class ClockScreen extends StatelessWidget {
             radius: _mediaQueryWidth * radiusMultiplier,
             lineWidth: _lineWidth,
             animation: true,
-            percent: _clockController.buttonChange == false
-                ? _clockController.secondsForAnimation
+            percent: _workBreakController.buttonChange == false
+                ? _workBreakController.secondsForAnimation
                 : 1.0,
             circularStrokeCap: CircularStrokeCap.round,
-            backgroundColor: _clockController.clockThemeTrigger ? bg1 : bg2,
-            progressColor: _clockController.clockThemeTrigger ? pc1 : pc2,
+            backgroundColor: _workBreakController.clockThemeTrigger ? bg1 : bg2,
+            progressColor: _workBreakController.clockThemeTrigger ? pc1 : pc2,
           ),
         );
 
@@ -143,13 +144,13 @@ class ClockScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              _clockController.buttonChange == false
-                  ? _displayTime(_clockController)
-                  : _clockController.remainingTime == '0.min&0,sec'
-                      ? _remainingTime(_clockController.remainingInterval,
+              _workBreakController.buttonChange == false
+                  ? _displayTime(_workBreakController)
+                  : _workBreakController.remainingTime == '0.min&0,sec'
+                      ? _remainingTime(_workBreakController.remainingInterval,
                           'Start working in')
-                      : _remainingTime(
-                          _clockController.remainingTime, 'Take a break in'),
+                      : _remainingTime(_workBreakController.remainingTime,
+                          'Take a break in'),
               _clockRing(0.42, Colors.transparent, Colors.transparent,
                   Colors.blue, Colors.green),
               _clockRing(0.48, Colors.transparent, Colors.transparent,
@@ -163,14 +164,14 @@ class ClockScreen extends StatelessWidget {
                     shaderCallback: (bounds) => RadialGradient(
                       center: Alignment.center,
                       radius: .1,
-                      colors: _clockController.clockThemeTrigger
+                      colors: _workBreakController.clockThemeTrigger
                           ? [Colors.blue, Colors.blueAccent]
                           : [Colors.green, Colors.greenAccent],
                       tileMode: TileMode.clamp,
                     ).createShader(bounds),
                     child: Icon(
                       Icons.ac_unit,
-                      color: _clockController.clockThemeTrigger
+                      color: _workBreakController.clockThemeTrigger
                           ? Colors.blue
                           : Colors.amber,
                       size: _mediaQueryWidth * .44,

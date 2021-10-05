@@ -1,7 +1,7 @@
 /// Author : Sujith S A
 /// Created on : 27th Apr 2021
 
-/// This is the main screen of the application. It show the clock from clock.dart
+/// This is the main screen of the application. It show the clock from animated_clock.dart
 /// and also displays options to users to set the work timing and breaks taken in
 /// between. The clock theme is also triggered to a new scheme once the user starts working
 
@@ -10,8 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
-import 'package:work_break/controllers/clock_controller.dart';
-import 'package:work_break/views/clock.dart';
+import 'package:work_break/controllers/work_break_controller.dart';
+import 'package:work_break/views/animated_clock.dart';
 import 'dart:io' show Platform;
 
 class HomeScreen extends StatefulWidget {
@@ -20,7 +20,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ClockController _clockController = Get.put(ClockController());
+  final WorkBreakController _workBreakController =
+      Get.put(WorkBreakController());
 
   Widget build(BuildContext context) {
     double _mediaQueryHeight = MediaQuery.of(context).size.height;
@@ -30,14 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
     double _fontButton = _mediaQueryHeight > 550 ? 22 : 16;
     double _opacity = 0.8;
     Color _textColor = Colors.black;
-
     print(_mediaQueryHeight);
 
     TextSpan _headerSpanText(String name, Color color, double fontSize) =>
         TextSpan(
           text: name,
-          style:
-              TextStyle(fontSize: fontSize, color: color, fontFamily: 'Future'),
+          style: TextStyle(fontSize: fontSize, color: color, fontFamily: ''),
         );
 
     Container _backgroundImage = Container(
@@ -75,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
             gradient: LinearGradient(
-                colors: _clockController.buttonChange == false
+                colors: _workBreakController.buttonChange == false
                     ? [
                         Colors.greenAccent.withOpacity(_opacity),
                         Colors.white.withOpacity(_opacity),
@@ -110,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                       fontSize: _fontSizeTitle,
                       color: _textColor,
-                      fontFamily: 'Future'),
+                      fontFamily: ''),
                 ),
               ),
               Container(
@@ -127,8 +126,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       activeColor: _textColor,
                       onSelected: (String selected) {
                         selector == 1
-                            ? _clockController.onSelectedWorkTime(selected)
-                            : _clockController.onSelectedWorkInterval(selected);
+                            ? _workBreakController.onSelectedWorkTime(selected)
+                            : _workBreakController
+                                .onSelectedWorkInterval(selected);
                       }),
                 ),
               ),
@@ -143,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.only(
               left: 10, top: MediaQuery.of(context).size.height * .004),
           decoration: BoxDecoration(
-            color: _clockController.buttonChange == false
+            color: _workBreakController.buttonChange == false
                 ? Colors.green.withOpacity(.3)
                 : Colors.blue.withOpacity(.3),
             border: Border.all(
@@ -159,8 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
             onChanged: (value) {
               print(controller);
               if (controller == false) {
-                _clockController.setWorkTimeInput('');
-                _clockController.setBreakTimeInput('');
+                _workBreakController.setWorkTimeInput('');
+                _workBreakController.setBreakTimeInput('');
               }
               onChangeFunction(value);
             },
@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: DecoratedBox(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-                colors: _clockController.buttonChange == false
+                colors: _workBreakController.buttonChange == false
                     ? [Colors.greenAccent, Colors.white, Colors.greenAccent]
                     : [Colors.blue, Colors.white, Colors.blue]),
             border: Border.all(
@@ -192,10 +192,10 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
         child: ElevatedButton(
           child: Text(
-            _clockController.buttonChange == false
+            _workBreakController.buttonChange == false
                 ? 'S t a r t   W o r k i n g'
                 : 'C h a n g e   T i m i n g s',
-            style: TextStyle(color: _textColor, fontFamily: 'Future'),
+            style: TextStyle(color: _textColor, fontFamily: ''),
           ),
           style: ElevatedButton.styleFrom(
             primary: Colors.transparent,
@@ -209,14 +209,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.bold),
           ),
           onPressed: () async {
-            if (_clockController.checkBoxValue == true) {
-              await _clockController.setCustomTime();
+            if (_workBreakController.checkBoxValue == true) {
+              await _workBreakController.setCustomTime();
               setState(() {});
             } else {
               print('in this loop');
-              await _clockController.onClickStartWork(
-                  _clockController.selectedWorkTime,
-                  _clockController.selectedWorkInterval);
+              await _workBreakController.onClickStartWork(
+                  _workBreakController.selectedWorkTime,
+                  _workBreakController.selectedWorkInterval);
               setState(() {});
             }
           },
@@ -231,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.transparent,
             child: Center(
               child: AdWidget(
-                ad: _clockController.ad,
+                ad: _workBreakController.ad,
               ),
             ),
           )
@@ -263,23 +263,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Container(
                                       width: _mediaQueryWidth * .6,
                                       height: _mediaQueryWidth * .6,
-                                      child: ClockScreen()),
+                                      child: AnimatedClockScreen()),
                                   alignment: Alignment.topCenter,
                                 ),
                                 Container(
                                   child: Row(
                                     children: <Widget>[
                                       new Checkbox(
-                                          value: _clockController.checkBoxValue,
-                                          activeColor:
-                                              _clockController.buttonChange ==
-                                                      false
-                                                  ? Colors.green
-                                                  : Colors.blue,
+                                          value: _workBreakController
+                                              .checkBoxValue,
+                                          activeColor: _workBreakController
+                                                      .buttonChange ==
+                                                  false
+                                              ? Colors.green
+                                              : Colors.blue,
                                           onChanged: (bool newValue) {
                                             print(newValue);
-                                            _clockController.setCheckBoxValue =
-                                                newValue;
+                                            _workBreakController
+                                                .setCheckBoxValue = newValue;
                                           }),
                                       Text(
                                         'Set Custom Time',
@@ -289,30 +290,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ],
                                   ),
                                 ),
-                                _clockController.checkBoxValue == true
+                                _workBreakController.checkBoxValue == true
                                     ? _customInputContainer(
-                                        _clockController
+                                        _workBreakController
                                             .workTimeInputController,
-                                        _clockController.setWorkTimeInput,
+                                        _workBreakController.setWorkTimeInput,
                                         'Enter Work time in minutes > 5')
                                     : Container(),
-                                _clockController.checkBoxValue == true
+                                _workBreakController.checkBoxValue == true
                                     ? _customInputContainer(
-                                        _clockController
+                                        _workBreakController
                                             .breakTimeInputController,
-                                        _clockController.setBreakTimeInput,
+                                        _workBreakController.setBreakTimeInput,
                                         'Enter Break time in minutes > 1')
                                     : Container(),
-                                _clockController.checkBoxValue == false
+                                _workBreakController.checkBoxValue == false
                                     ? _optionsContainer('W O R K    T I M E',
-                                        _clockController.workOptions, 1)
+                                        _workBreakController.workOptions, 1)
                                     : Container(),
                                 SizedBox(
                                   height: 15,
                                 ),
-                                _clockController.checkBoxValue == false
+                                _workBreakController.checkBoxValue == false
                                     ? _optionsContainer('B R E A K   T I M E ',
-                                        _clockController.intervalOptions, 2)
+                                        _workBreakController.intervalOptions, 2)
                                     : Container(),
                                 Platform.isIOS
                                     ? SizedBox(

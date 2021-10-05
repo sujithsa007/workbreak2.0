@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: CustomColor.colorCustom,
-          fontFamily: '',
+          // fontFamily: '',
         ),
         home: AnimatedSplashScreen(
           duration: 2000,
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 35,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Future')),
+                  fontFamily: '')),
         ));
   }
 }

@@ -5,7 +5,7 @@
 /// It contains both Static and Observable objects
 /// The clock animation logic is executed by using a time to pass 1/60th of a circle's value
 /// every second into the CircularPercentIndicator widget's percent parameter, located
-/// under clock.dart
+/// under animated_clock.dart
 
 import 'dart:async';
 import 'dart:io';
@@ -19,8 +19,8 @@ import 'package:intl/intl.dart';
 import 'package:work_break/utilities/ad_helper.dart';
 import 'package:work_break/utilities/messages.dart';
 
-class ClockController extends GetxController {
-  ClockController() {
+class WorkBreakController extends GetxController {
+  WorkBreakController() {
     if (Platform.isAndroid) {
       _enableBackgroundMode();
       _initGoogleMobileAds();
@@ -111,7 +111,6 @@ class ClockController extends GetxController {
         },
       ),
     );
-
     _ad.load();
   }
 
@@ -139,7 +138,6 @@ class ClockController extends GetxController {
 
   Timer _selectedWorkTimer;
   Timer _selectedIntervalTimer;
-  Timer _testTimer;
   Timer _clockTimer;
   Timer _countDownTimer;
 
@@ -251,7 +249,10 @@ class ClockController extends GetxController {
   }
 
   onClickStartWork(workTime, breakInterval) async {
-    _loadBanner();
+    Timer.periodic(Duration(minutes: 1), (Timer timer) async {
+      _loadBanner();
+    });
+
     if (workTime == '' || breakInterval == '') {
       Get.snackbar(
         'Oops',
@@ -280,22 +281,19 @@ class ClockController extends GetxController {
       if (_selectedIntervalTimer != null) {
         _selectedIntervalTimer.cancel();
       }
-      if (_testTimer != null) {
-        _testTimer.cancel();
-      }
       setButtonChange = true;
       await _setUpTimer(_selectedWorkTime.value, _selectedWorkInterval.value);
     }
   }
 
-  bool _isPositiveNumber(String string) {
-    final checkNumber = RegExp(r'^(?:[+0]9)?[0-9]{10}$');
-    final checkNegativeNumber = RegExp(r'^[1-9]+[0-9]*$');
-    return checkNumber.hasMatch(string) && checkNegativeNumber.hasMatch(string);
+  bool _isValidNumber(String string) {
+    final validCharacters = RegExp(r'^[0-9]+$');
+    return validCharacters.hasMatch(string);
   }
 
   setCustomTime() async {
-    if (!_isPositiveNumber(_workTimeInputController.text.toString())) {
+    if (!_isValidNumber(_workTimeInputController.text.toString()) ||
+        !_isValidNumber(_breakTimeInputController.text.toString())) {
       Get.snackbar(
         'Error',
         'Enter a valid work and break time',
