@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:work_break/utilities/color_swatches.dart';
+import 'package:work_break/utilities/tts_settings_screen.dart';
 import 'package:work_break/views/home_screen.dart';
 
 void main() {

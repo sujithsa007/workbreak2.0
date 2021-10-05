@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:work_break/controllers/work_break_controller.dart';
+import 'package:work_break/utilities/tts_settings_screen.dart';
 import 'package:work_break/views/animated_clock.dart';
 import 'dart:io' show Platform;
 
@@ -211,14 +212,13 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () async {
             if (_workBreakController.checkBoxValue == true) {
               await _workBreakController.setCustomTime();
-              setState(() {});
             } else {
               print('in this loop');
               await _workBreakController.onClickStartWork(
                   _workBreakController.selectedWorkTime,
                   _workBreakController.selectedWorkInterval);
-              setState(() {});
             }
+            setState(() {});
           },
         ),
       ),
@@ -252,6 +252,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             backgroundColor: Colors.transparent,
                             // drawer: _drawer,
                             appBar: AppBar(
+                              actions: [
+                                IconButton(
+                                  icon: new Icon(Icons.settings),
+                                  tooltip: 'Settings',
+                                  onPressed: () => Get.to(
+                                      TTSSettingsScreen()), // null disables the button
+                                ),
+                              ],
                               title: _appBarTitle,
                               centerTitle: true,
                               backgroundColor: Colors.transparent,
