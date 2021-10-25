@@ -10,21 +10,29 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TextToSpeechController extends GetxController {
   FlutterTts _flutterTts = new FlutterTts();
 
   bool get isAndroid => Platform.isAndroid;
 
-  double _volume = 1.0;
-  double _pitch = 1.0;
-  double _rate;
-
   TextToSpeechController() {
     _initTts();
   }
 
   Future _initTts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getDouble('volume') == null) {
+      prefs.setDouble('volume', 1.0);
+    }
+    if (prefs.getDouble('pitch') == null) {
+      prefs.setDouble('pitch', 1.0);
+    }
+    if (prefs.getDouble('rate') == null) {
+      prefs.setDouble('rate', 0.7);
+    }
+
     if (isAndroid) {
       print('initTTS loop start************');
       await _flutterTts.isLanguageInstalled('en-US');
@@ -35,10 +43,11 @@ class TextToSpeechController extends GetxController {
   }
 
   Future speak(String text) async {
-    _rate = isAndroid ? 0.7 : 0.5;
-    await _flutterTts.setVolume(_volume);
-    await _flutterTts.setSpeechRate(_rate);
-    await _flutterTts.setPitch(_pitch);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await _flutterTts.setVolume(prefs.getDouble('volume'));
+    await _flutterTts.setSpeechRate(prefs.getDouble('rate'));
+    await _flutterTts.setPitch(prefs.getDouble('pitch'));
     await _flutterTts.awaitSpeakCompletion(true);
     await _flutterTts.speak(text);
   }

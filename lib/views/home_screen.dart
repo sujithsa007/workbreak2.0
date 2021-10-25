@@ -256,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 IconButton(
                                   icon: new Icon(Icons.settings),
                                   tooltip: 'Settings',
-                                  onPressed: () => Get.to(
+                                  onPressed: () => Get.to(() =>
                                       TTSSettingsScreen()), // null disables the button
                                 ),
                               ],

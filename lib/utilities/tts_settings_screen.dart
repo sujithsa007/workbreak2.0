@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TTSSettingsScreen extends StatefulWidget {
   @override
@@ -17,9 +18,9 @@ class _TTSSettingsScreenState extends State<TTSSettingsScreen> {
   FlutterTts flutterTts;
   String language;
   String engine;
-  double volume = 0.5;
-  double pitch = 1.0;
-  double rate = 0.5;
+  double volume;
+  double pitch;
+  double rate;
   bool isCurrentLanguageInstalled = false;
 
   String _newVoiceText;
@@ -38,10 +39,20 @@ class _TTSSettingsScreenState extends State<TTSSettingsScreen> {
   @override
   initState() {
     super.initState();
+    _loadLatestSettings();
     initTts();
   }
 
-  initTts() {
+  _loadLatestSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      volume = prefs.getDouble('volume');
+      pitch = prefs.getDouble('pitch');
+      rate = prefs.getDouble('rate');
+    });
+  }
+
+  initTts() async {
     flutterTts = FlutterTts();
 
     flutterTts.setStartHandler(() {
@@ -283,12 +294,27 @@ class _TTSSettingsScreenState extends State<TTSSettingsScreen> {
           height: MediaQuery.of(context).size.width * .15,
           child: ElevatedButton(
               onPressed: () => _saveSettings(), child: Text('Save Settings')),
+        ),
+        SizedBox(
+          height: 20.0,
+        ),
+        Container(
+          // alignment: Alignment.center,
+          margin: EdgeInsets.only(left: 25, right: 25),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.width * .15,
+          child: ElevatedButton(
+              onPressed: () => _setDefault(), child: Text('Set Default')),
         )
       ],
     );
   }
 
-  _saveSettings() {
+  _saveSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('volume', volume);
+    prefs.setDouble('pitch', pitch);
+    prefs.setDouble('rate', rate);
     Get.snackbar(
       'Success',
       'Settings have been updated',
@@ -299,9 +325,28 @@ class _TTSSettingsScreenState extends State<TTSSettingsScreen> {
     );
   }
 
+  _setDefault() async {
+    volume = 1.0;
+    pitch = 1.0;
+    rate = 0.7;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('volume', volume);
+    prefs.setDouble('pitch', pitch);
+    prefs.setDouble('rate', rate);
+    Get.snackbar(
+      'Success',
+      'Default settings have been applied',
+      snackPosition: SnackPosition.BOTTOM,
+      duration: Duration(seconds: 2),
+      colorText: Colors.white,
+      backgroundColor: Colors.green,
+    );
+    setState(() {});
+  }
+
   Widget _volume() {
     return Slider(
-        value: volume,
+        value: volume == null ? 1.0 : volume,
         onChanged: (newVolume) {
           setState(() => volume = newVolume);
         },
@@ -313,7 +358,7 @@ class _TTSSettingsScreenState extends State<TTSSettingsScreen> {
 
   Widget _pitch() {
     return Slider(
-      value: pitch,
+      value: pitch == null ? 1.0 : pitch,
       onChanged: (newPitch) {
         setState(() => pitch = newPitch);
       },
@@ -327,7 +372,7 @@ class _TTSSettingsScreenState extends State<TTSSettingsScreen> {
 
   Widget _rate() {
     return Slider(
-      value: rate,
+      value: rate == null ? 0.7 : rate,
       onChanged: (newRate) {
         setState(() => rate = newRate);
       },

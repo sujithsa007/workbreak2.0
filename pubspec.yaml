@@ -22,6 +22,7 @@ dependencies:
   animated_splash_screen: ^1.0.1+2
   page_transition: ^1.1.7+4
   flutter_background: ^1.0.1
+  shared_preferences: ^2.0.0
 
 
 dev_dependencies:
