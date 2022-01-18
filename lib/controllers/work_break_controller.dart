@@ -249,10 +249,7 @@ class WorkBreakController extends GetxController {
   }
 
   onClickStartWork(workTime, breakInterval) async {
-    Timer.periodic(Duration(minutes: 1), (Timer timer) async {
-      _loadBanner();
-    });
-
+    _loadBanner();
     if (workTime == '' || breakInterval == '') {
       Get.snackbar(
         'Oops',
