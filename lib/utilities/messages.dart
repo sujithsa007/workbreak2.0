@@ -1,7 +1,7 @@
 import 'dart:math';
 
 class RandomMessage {
-  static String getARandomMessage() {
+  static String getRandomMessage() {
     List workMessages = [
       'Time to take a break',
       'Lets stretch those muscles a bit',

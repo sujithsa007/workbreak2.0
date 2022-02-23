@@ -17,6 +17,7 @@ import 'package:work_break/controllers/text_to_speech_controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:work_break/utilities/ad_helper.dart';
+import 'package:work_break/utilities/constants.dart';
 import 'package:work_break/utilities/messages.dart';
 
 class WorkBreakController extends GetxController {
@@ -38,33 +39,9 @@ class WorkBreakController extends GetxController {
   get workTimeInputController => _workTimeInputController;
   get breakTimeInputController => _breakTimeInputController;
 
-  var _workOptions = <String>[
-    "30 mins    ",
-    "45 mins    ",
-    "60 mins    ",
-    "75 mins    ",
-    "90 mins    ",
-    "105 mins    ",
-    "120 mins    ",
-    "135 mins    ",
-    "150 mins    ",
-    "165 mins    ",
-    "180 mins    ",
-  ];
-  var _intervalOptions = <String>[
-    "5 mins    ",
-    "10 mins    ",
-    "15 mins    ",
-    "20 mins    ",
-    "25 mins    ",
-    "30 mins    ",
-    "35 mins    ",
-    "40 mins    ",
-    "45 mins    ",
-    "50 mins    ",
-    "55 mins    ",
-    "60 mins    ",
-  ];
+  var _workOptions = WORK_OPTIONS;
+  var _intervalOptions = INTERVAL_OPTIONS;
+
   get workOptions => _workOptions;
   get intervalOptions => _intervalOptions;
 
@@ -130,10 +107,12 @@ class WorkBreakController extends GetxController {
   }
 
   RxDouble _secondsForAnimation = 0.0.obs;
+  RxDouble _secondsForAnimation2 = 0.0.obs;
   RxString _currentTimeToDisplay = ''.obs;
   RxString _amPmToDisplay = ''.obs;
   get currentTimeToDisplay => _currentTimeToDisplay.value;
   get secondsForAnimation => _secondsForAnimation.value;
+  get secondsForAnimation2 => _secondsForAnimation2.value;
   get amPmToDisplay => _amPmToDisplay.value;
 
   Timer _selectedWorkTimer;
@@ -190,6 +169,7 @@ class WorkBreakController extends GetxController {
   _clockAnimateTimer() {
     _clockTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       _secondsForAnimation.value = DateTime.now().second / 60;
+      _secondsForAnimation2.value = 1 - DateTime.now().second / 60;
       _currentTimeToDisplay.value = DateFormat('hh:mm').format(DateTime.now());
       _amPmToDisplay.value = DateFormat(' a').format(DateTime.now());
     });
@@ -249,7 +229,6 @@ class WorkBreakController extends GetxController {
   }
 
   onClickStartWork(workTime, breakInterval) async {
-    _loadBanner();
     if (workTime == '' || breakInterval == '') {
       Get.snackbar(
         'Oops',
@@ -367,7 +346,7 @@ class WorkBreakController extends GetxController {
             ' minutes';
       }
     }
-    String _randomMessage = RandomMessage.getARandomMessage();
+    String _randomMessage = RandomMessage.getRandomMessage();
     print('You have worked for ' + _finalAnnounceTime + '. $_randomMessage.');
 
     _selectedWorkTimer = await _startTimer(

@@ -49,13 +49,30 @@ class AnimatedClockScreen extends StatelessWidget {
               )),
         );
 
-    Center _clockRing(double radiusMultiplier, bg1, bg2, pc1, pc2) => Center(
+    Center _clockRingClock(double radiusMultiplier, bg1, bg2, pc1, pc2) =>
+        Center(
+          child: CircularPercentIndicator(
+            radius: _mediaQueryWidth * radiusMultiplier,
+            lineWidth: _lineWidth,
+            animation: false,
+            percent: _workBreakController.buttonChange == false
+                ? _workBreakController.secondsForAnimation
+                : 1.0,
+            circularStrokeCap: CircularStrokeCap.round,
+            backgroundColor: _workBreakController.clockThemeTrigger ? bg1 : bg2,
+            progressColor: _workBreakController.clockThemeTrigger ? pc1 : pc2,
+          ),
+        );
+
+    Center _clockRingAnticlock(double radiusMultiplier, bg1, bg2, pc1, pc2) =>
+        Center(
           child: CircularPercentIndicator(
             radius: _mediaQueryWidth * radiusMultiplier,
             lineWidth: _lineWidth,
             animation: true,
+            reverse: true,
             percent: _workBreakController.buttonChange == false
-                ? _workBreakController.secondsForAnimation
+                ? _workBreakController.secondsForAnimation2
                 : 1.0,
             circularStrokeCap: CircularStrokeCap.round,
             backgroundColor: _workBreakController.clockThemeTrigger ? bg1 : bg2,
@@ -151,12 +168,12 @@ class AnimatedClockScreen extends StatelessWidget {
                           'Start working in')
                       : _remainingTime(_workBreakController.remainingTime,
                           'Take a break in'),
-              _clockRing(0.42, Colors.transparent, Colors.transparent,
+              _clockRingClock(0.42, Colors.transparent, Colors.transparent,
                   Colors.blue, Colors.green),
-              _clockRing(0.48, Colors.transparent, Colors.transparent,
-                  Colors.white, Colors.white),
-              _clockRing(0.54, Colors.transparent, Colors.transparent,
-                  Colors.blue, Colors.green),
+              _clockRingAnticlock(0.42, Colors.transparent, Colors.transparent,
+                  Colors.white, Colors.black12),
+              // _clockRingClock(0.54, Colors.transparent, Colors.transparent,
+              //     Colors.blue, Colors.green),
               Opacity(
                 opacity: .25,
                 child: Center(
