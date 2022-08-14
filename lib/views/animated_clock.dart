@@ -4,7 +4,6 @@
 /// This class creates a clock,which shows current device time with seconds shown in clockwise rotational animation.
 /// It will be integrated into the main home screen
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';

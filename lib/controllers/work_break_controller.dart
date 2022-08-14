@@ -23,11 +23,11 @@ import 'package:work_break/utilities/messages.dart';
 class WorkBreakController extends GetxController {
   WorkBreakController() {
     if (Platform.isAndroid) {
-      _enableBackgroundMode();
+      enableBackgroundMode();
       _initGoogleMobileAds();
-      _loadBanner();
+      loadBanner();
     }
-    _clockAnimateTimer();
+    clockAnimateTimer();
     Wakelock.enable();
   }
 
@@ -57,7 +57,7 @@ class WorkBreakController extends GetxController {
     return MobileAds.instance.initialize();
   }
 
-  _enableBackgroundMode() async {
+  enableBackgroundMode() async {
     await FlutterBackground.hasPermissions;
     final androidConfig = FlutterBackgroundAndroidConfig(
       notificationTitle: "Work break",
@@ -73,7 +73,7 @@ class WorkBreakController extends GetxController {
   BannerAd _ad;
   get ad => _ad;
 
-  _loadBanner() {
+  loadBanner() {
     _ad = BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       size: AdSize.banner,
@@ -166,7 +166,7 @@ class WorkBreakController extends GetxController {
     _selectedWorkInterval.value = val;
   }
 
-  _clockAnimateTimer() {
+  clockAnimateTimer() {
     _clockTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       _secondsForAnimation.value = DateTime.now().second / 60;
       _secondsForAnimation2.value = 1 - DateTime.now().second / 60;
@@ -175,7 +175,7 @@ class WorkBreakController extends GetxController {
     });
   }
 
-  _clockAnimateCountDown(workTime, breakTime) {
+  clockAnimateCountDown(workTime, breakTime) {
     int _remTime = int.parse(workTime.toString().split(' ')[0]);
     int _remInterval = int.parse(breakTime.toString().split(' ')[0]);
     int _intRemTime = _remTime * 60;
@@ -203,7 +203,7 @@ class WorkBreakController extends GetxController {
           _countDownTimer.cancel();
         }
         print('timer cancelled');
-        _clockAnimateCountDown(workTime, breakTime);
+        clockAnimateCountDown(workTime, breakTime);
       }
       if (_intRemTime >= 0) {
         setRemainingTime = _intRemTime--;
@@ -249,7 +249,7 @@ class WorkBreakController extends GetxController {
         backgroundColor: Colors.green,
       );
 
-      _clockAnimateCountDown(workTime.toString(), breakInterval.toString());
+      clockAnimateCountDown(workTime.toString(), breakInterval.toString());
 
       if (_selectedWorkTimer != null) {
         _selectedWorkTimer.cancel();
@@ -258,18 +258,18 @@ class WorkBreakController extends GetxController {
         _selectedIntervalTimer.cancel();
       }
       setButtonChange = true;
-      await _setUpTimer(_selectedWorkTime.value, _selectedWorkInterval.value);
+      await setUpTimer(_selectedWorkTime.value, _selectedWorkInterval.value);
     }
   }
 
-  bool _isValidNumber(String string) {
+  bool isValidNumber(String string) {
     final validCharacters = RegExp(r'^[0-9]+$');
     return validCharacters.hasMatch(string);
   }
 
   setCustomTime() async {
-    if (!_isValidNumber(_workTimeInputController.text.toString()) ||
-        !_isValidNumber(_breakTimeInputController.text.toString())) {
+    if (!isValidNumber(_workTimeInputController.text.toString()) ||
+        !isValidNumber(_breakTimeInputController.text.toString())) {
       Get.snackbar(
         'Error',
         'Enter a valid work and break time',
@@ -297,10 +297,10 @@ class WorkBreakController extends GetxController {
     }
   }
 
-  _startTimer(int duration, String message, bool triggerFn) async {
+  startTimer(int duration, String message, bool triggerFn) async {
     return Timer.periodic(Duration(minutes: duration), (Timer timer) async {
       triggerFn
-          ? _setUpTimer(_timeForWorkTimer, _timeForIntervalTimer)
+          ? setUpTimer(_timeForWorkTimer, _timeForIntervalTimer)
           : print('No need to trigger ******');
       triggerFn ? _selectedIntervalTimer.cancel() : _selectedWorkTimer.cancel();
       await _textToSpeechController.speak(message);
@@ -310,7 +310,7 @@ class WorkBreakController extends GetxController {
   String _finalAnnounceTime = '';
   int _timeForWorkTimer, _timeForIntervalTimer;
 
-  _setUpTimer(workTimeReminder, breakIntervalReminder) async {
+  setUpTimer(workTimeReminder, breakIntervalReminder) async {
     if (workTimeReminder.toString().contains('min')) {
       _timeForWorkTimer = int.parse(workTimeReminder.toString().split(' ')[0]);
     } else {
@@ -349,12 +349,12 @@ class WorkBreakController extends GetxController {
     String _randomMessage = RandomMessage.getRandomMessage();
     print('You have worked for ' + _finalAnnounceTime + '. $_randomMessage.');
 
-    _selectedWorkTimer = await _startTimer(
+    _selectedWorkTimer = await startTimer(
         _timeForWorkTimer,
         'You have worked for ' + _finalAnnounceTime + '. $_randomMessage.',
         false);
 
-    _selectedIntervalTimer = await _startTimer(
+    _selectedIntervalTimer = await startTimer(
         _timeForWorkTimer + _timeForIntervalTimer,
         _timeForIntervalTimer.toString() == '60'
             ? 'You have taken a break for 1 hour. Lets get back to work.'
