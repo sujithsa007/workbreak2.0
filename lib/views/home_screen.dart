@@ -5,7 +5,6 @@
 /// and also displays options to users to set the work timing and breaks taken in
 /// between. The clock theme is also triggered to a new scheme once the user starts working
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -199,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(color: _textColor, fontFamily: ''),
           ),
           style: ElevatedButton.styleFrom(
-            primary: Colors.transparent,
+            backgroundColor: Colors.transparent,
             shadowColor: Colors.black,
             splashFactory: InkRipple.splashFactory,
             padding: EdgeInsets.only(top: 20, bottom: 20),
